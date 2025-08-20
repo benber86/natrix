@@ -2,7 +2,11 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from natrix.rules.common import BaseRule, RuleRegistry, _get_staticcall_function_mutability
+from natrix.rules.common import (
+    BaseRule,
+    RuleRegistry,
+    _get_staticcall_function_mutability,
+)
 
 if TYPE_CHECKING:
     from natrix.ast_node import FunctionDefNode
@@ -48,7 +52,7 @@ class ImplicitPureRule(BaseRule):
                 if mutability != "pure":
                     all_pure = False
                     break
-            
+
             # If not all staticcalls are pure, this function is not pure
             if not all_pure:
                 return

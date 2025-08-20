@@ -281,7 +281,7 @@ class BaseRule(VyperASTVisitor):
         self.issues.append(issue)
 
 
-def _get_staticcall_function_mutability(staticcall_node) -> str | None:
+def _get_staticcall_function_mutability(staticcall_node: Node) -> str | None:
     """
     Extract the mutability (pure/view) of a function being called via staticcall.
     # TODO: does not work for imported interfaces
@@ -325,11 +325,11 @@ def _get_staticcall_function_mutability(staticcall_node) -> str | None:
                         if stmt.get("ast_type") == "Expr":
                             value = stmt.get("value", {})
                             if value.get("ast_type") == "Name":
-                                name_id = value.get("id")
+                                name_id: str = value.get("id")
                                 if name_id in ["pure", "view"]:
                                     return name_id
 
         return None
-    except Exception:  # noqa: S110
+    except Exception:
         # If we can't determine mutability, err on the side of caution
         return None

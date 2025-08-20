@@ -265,7 +265,7 @@ class FunctionDefNode(Node):
             for access_type in ("variable_reads", "variable_writes"):
                 if access_type in node.node_dict:
                     for item in node.get(access_type):
-                        # Only include storage accesses (accessed via self.variable_name)
+                        # Only include storage accesses (accessed via self.variable)
                         # Check if this is an Attribute node where value.id is 'self'
                         # This automatically excludes:
                         # - Function arguments (accessed directly as Name nodes)
