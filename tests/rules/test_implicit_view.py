@@ -24,7 +24,7 @@ def test_implicit_view_with_extcalls(test_project_context):
 
     issues = run_rule_on_file(rule, "test_implicit_view.vy", test_project_context)
     assert len(issues) == 1
-    assert issues[0].position == "15:0"
+    assert issues[0].position == "16:0"
     assert (
         issues[0].message
         == "Function 'get_supply' reads contract state but is not marked as 'view'."
