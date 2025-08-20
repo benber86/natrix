@@ -270,8 +270,10 @@ class FunctionDefNode(Node):
                         # This automatically excludes:
                         # - Function arguments (accessed directly as Name nodes)
                         # - Local variables (accessed directly as Name nodes)
-                        if (node.ast_type == "Attribute" and 
-                            node.node_dict.get("value", {}).get("id") == "self"):
+                        if (
+                            node.ast_type == "Attribute"
+                            and node.node_dict.get("value", {}).get("id") == "self"
+                        ):
                             accesses.append(
                                 MemoryAccess(
                                     node=node,

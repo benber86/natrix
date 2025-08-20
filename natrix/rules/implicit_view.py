@@ -2,7 +2,11 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from natrix.rules.common import BaseRule, RuleRegistry, _get_staticcall_function_mutability
+from natrix.rules.common import (
+    BaseRule,
+    RuleRegistry,
+    _get_staticcall_function_mutability,
+)
 
 if TYPE_CHECKING:
     from natrix.ast_node import FunctionDefNode
@@ -52,7 +56,7 @@ class ImplicitViewRule(BaseRule):
                     all_pure = False
                 elif mutability != "pure":
                     all_pure = False
-            
+
             # If all staticcalls are pure, let implicit_pure handle this
             if all_pure:
                 return

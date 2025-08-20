@@ -2,6 +2,7 @@ interface IERC20:
     def transfer(_to: address, _amount: uint256) -> bool: nonpayable
     def totalSupply() -> uint256: view
 
+
 # This has no memory access but uses an extcall, so it is not a view and should not raise
 @external
 def transfer(_token: address, _target: address, _amount: uint256):
