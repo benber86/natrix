@@ -38,6 +38,7 @@ class ImplicitViewRule(BaseRule):
         accesses = node.memory_accesses
         read = any(access.type == "read" for access in accesses)
         write = any(access.type == "write" for access in accesses)
+        extcalls = node.get_descendants(node_type="ExtCall")
 
-        if read and not write:
+        if read and not (write or extcalls):
             self.add_issue(node, node.get("name"))
