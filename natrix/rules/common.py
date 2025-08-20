@@ -283,7 +283,7 @@ class BaseRule(VyperASTVisitor):
 def _get_staticcall_function_mutability(staticcall_node) -> str | None:
     """
     Extract the mutability (pure/view) of a function being called via staticcall.
-
+    # TODO: does not work for imported interfaces
     Returns:
         "pure" if the interface function is pure
         "view" if the interface function is view

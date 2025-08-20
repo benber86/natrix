@@ -41,19 +41,25 @@ class ImplicitViewRule(BaseRule):
         extcalls = node.get_descendants(node_type="ExtCall")
         staticcalls = node.get_descendants(node_type="StaticCall")
 
-        # Check if all staticcalls are to pure functions
-        # If so, this should be handled by the implicit_pure rule instead
+        # Check staticcalls for view function calls
+        has_view_staticcalls = False
         if staticcalls:
             all_pure = True
             for staticcall in staticcalls:
                 mutability = _get_staticcall_function_mutability(staticcall)
-                if mutability != "pure":
+                if mutability == "view":
+                    has_view_staticcalls = True
                     all_pure = False
-                    break
+                elif mutability != "pure":
+                    all_pure = False
             
             # If all staticcalls are pure, let implicit_pure handle this
             if all_pure:
                 return
 
-        if read and not (write or extcalls):
+        # Function needs @view if it:
+        # 1. Reads from storage, OR
+        # 2. Makes staticcalls to view functions
+        # AND doesn't write to storage or make extcalls
+        if (read or has_view_staticcalls) and not (write or extcalls):
             self.add_issue(node, node.get("name"))

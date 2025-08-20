@@ -254,13 +254,6 @@ class FunctionDefNode(Node):
         variable_reads/variable_writes in nodes. Excludes function arguments which
         are read from calldata, not storage.
         """
-        # Get this function's argument node IDs to filter them out
-        arg_node_ids = set()
-        for arg_node in self.get_descendants(node_type="arg"):
-            node_id = arg_node.node_dict.get("node_id")
-            if node_id is not None:
-                arg_node_ids.add(node_id)
-
         # Get all nodes that might have variable_reads or variable_writes
         all_nodes = self.get_descendants()
         if not all_nodes:
@@ -272,23 +265,22 @@ class FunctionDefNode(Node):
             for access_type in ("variable_reads", "variable_writes"):
                 if access_type in node.node_dict:
                     for item in node.get(access_type):
-                        # Check if this access is to a function argument (calldata)
-                        decl_node = item.get("decl_node", {})
-                        decl_node_id = decl_node.get("node_id")
-                        
-                        # Skip function argument accesses - they're calldata, not storage
-                        if decl_node_id in arg_node_ids:
-                            continue
-                            
-                        accesses.append(
-                            MemoryAccess(
-                                node=node,
-                                type="read"
-                                if access_type == "variable_reads"
-                                else "write",
-                                var=item.get("name"),
+                        # Only include storage accesses (accessed via self.variable_name)
+                        # Check if this is an Attribute node where value.id is 'self'
+                        # This automatically excludes:
+                        # - Function arguments (accessed directly as Name nodes)
+                        # - Local variables (accessed directly as Name nodes)
+                        if (node.ast_type == "Attribute" and 
+                            node.node_dict.get("value", {}).get("id") == "self"):
+                            accesses.append(
+                                MemoryAccess(
+                                    node=node,
+                                    type="read"
+                                    if access_type == "variable_reads"
+                                    else "write",
+                                    var=item.get("name"),
+                                )
                             )
-                        )
         return accesses
 
     @cached_property
